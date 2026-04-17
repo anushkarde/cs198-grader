@@ -1,0 +1,17 @@
+# Playwright saved login (never commit)
+storage_state.json
+
+# Environment and secrets
+.env
+.env.local
+
+# Playwright browser downloads (optional local cache)
+.playwright-browsers/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/

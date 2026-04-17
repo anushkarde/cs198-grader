@@ -1,0 +1,11 @@
+# CS198 Paperless grader — local configuration (paths relative to repo root)
+
+playwright:
+  # chromium | firefox | webkit
+  browser: chromium
+  # Written by login_session.py; loaded by probe and future tools
+  storage_state_path: storage_state.json
+
+paperless:
+  # Optional default for probe_grading_form.py when --url is omitted
+  probe_grading_url: ""
