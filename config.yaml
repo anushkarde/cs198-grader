@@ -9,3 +9,13 @@ playwright:
 paperless:
   # Optional default for probe_grading_form.py when --url is omitted
   probe_grading_url: ""
+  # Section assignment list page (table of students -> submission links), e.g.
+  # https://cs198.stanford.edu/paperless/CS/106A/sections/8004/assignments/1451
+  section_assignment_url: ""
+
+# discover_submissions.py: map folder names to submission grading URLs
+discover:
+  # Match folder names against SUNet (from row text) or numeric submission id from the URL
+  folder_key: submission_id
+  # Optional hand mapping (repo-relative path). Keys are folder names; values are submission URLs.
+  students_json_path: ""
