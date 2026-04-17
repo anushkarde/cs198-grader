@@ -30,3 +30,20 @@ discover:
   folder_key: submission_id
   # Optional hand mapping (repo-relative path). Keys are folder names; values are submission URLs.
   students_json_path: ""
+
+# llm_grade.py: model for structured scores + comment (API keys via env)
+llm:
+  # openai | anthropic
+  provider: openai
+  model: gpt-4o-mini
+  # Max chars of student code to attach (glob list below); 0 = skip code
+  max_code_chars: 12000
+  # Globs relative to each submission folder (first matches win, concatenated up to max_code_chars)
+  code_globs:
+    - "*.py"
+    - "**/*.py"
+
+# fill_grading_page.py: optional save after fill
+fill:
+  # Playwright selector for the button that commits grades (site-specific)
+  save_button_selector: 'button[type="submit"], input[type="submit"], button:has-text("Save")'

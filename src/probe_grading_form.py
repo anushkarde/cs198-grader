@@ -28,6 +28,7 @@ from src.form_field_probe import (  # noqa: E402
     fields_to_json_text,
     format_fields_human_readable,
 )
+from src.scrape_grading_form import build_llm_schema, schema_to_json_text  # noqa: E402
 from src.playwright_util import launch_browser, new_context_with_storage  # noqa: E402
 
 
@@ -65,9 +66,9 @@ def _parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--format",
-        choices=("human", "json"),
+        choices=("human", "json", "schema"),
         default="human",
-        help="Output format (default: human).",
+        help="human = readable list; json = raw DOM probe; schema = LLM rubric JSON (labels, types, max_points).",
     )
     return p.parse_args()
 
@@ -110,10 +111,15 @@ def main() -> int:
 
     if args.format == "json":
         sys.stdout.write(fields_to_json_text(fields))
+        print(f"Listed {len(fields)} field(s).", file=sys.stderr)
+    elif args.format == "schema":
+        schema = build_llm_schema(fields, source_url=url)
+        sys.stdout.write(schema_to_json_text(schema))
+        n = len(schema.get("fields") or [])
+        print(f"Serialized {n} schema field(s).", file=sys.stderr)
     else:
         sys.stdout.write(format_fields_human_readable(fields))
-
-    print(f"Listed {len(fields)} field(s).", file=sys.stderr)
+        print(f"Listed {len(fields)} field(s).", file=sys.stderr)
     return 0
 
 

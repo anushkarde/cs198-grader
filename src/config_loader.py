@@ -103,6 +103,53 @@ def autograder_script_name(cfg: dict[str, Any]) -> str:
     return str((cfg.get("autograder") or {}).get("script_name") or "KarelAutograder.py")
 
 
+def llm_provider(cfg: dict[str, Any]) -> str:
+    env = os.environ.get("CS198_LLM_PROVIDER", "").strip().lower()
+    if env in ("openai", "anthropic"):
+        return env
+    raw = (cfg.get("llm") or {}).get("provider") or "openai"
+    s = str(raw).strip().lower()
+    return s if s in ("openai", "anthropic") else "openai"
+
+
+def llm_model(cfg: dict[str, Any]) -> str:
+    env = os.environ.get("CS198_LLM_MODEL", "").strip()
+    if env:
+        return env
+    return str((cfg.get("llm") or {}).get("model") or "gpt-4o-mini")
+
+
+def llm_max_code_chars(cfg: dict[str, Any]) -> int:
+    env = os.environ.get("CS198_LLM_MAX_CODE_CHARS", "").strip()
+    if env:
+        try:
+            return max(0, int(env))
+        except ValueError:
+            return 12000
+    raw = (cfg.get("llm") or {}).get("max_code_chars")
+    try:
+        return max(0, int(raw)) if raw is not None else 12000
+    except (TypeError, ValueError):
+        return 12000
+
+
+def llm_code_globs(cfg: dict[str, Any]) -> list[str]:
+    raw = (cfg.get("llm") or {}).get("code_globs")
+    if isinstance(raw, list) and raw:
+        return [str(x) for x in raw]
+    return ["*.py", "**/*.py"]
+
+
+def fill_save_button_selector(cfg: dict[str, Any]) -> str:
+    env = os.environ.get("CS198_SAVE_BUTTON_SELECTOR", "").strip()
+    if env:
+        return env
+    return str(
+        (cfg.get("fill") or {}).get("save_button_selector")
+        or 'button[type="submit"], input[type="submit"], button:has-text("Save")'
+    )
+
+
 def autograder_timeout_sec(cfg: dict[str, Any]) -> float | None:
     env = os.environ.get("CS198_AUTOGRADER_TIMEOUT_SEC", "").strip()
     if env:

@@ -145,6 +145,29 @@ def rows_to_mapping(
     return mapping, warnings
 
 
+def load_mapping_json(path: Path) -> dict[str, str]:
+    """
+    Load a JSON file produced by discover_submissions (--output) or a plain object
+    of folder_key -> submission_url.
+    """
+    if not path.is_file():
+        return {}
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    if not isinstance(data, dict):
+        return {}
+    raw = data.get("mapping") if "mapping" in data else data
+    if not isinstance(raw, dict):
+        return {}
+    out: dict[str, str] = {}
+    for k, v in raw.items():
+        if str(k).startswith("_"):
+            continue
+        if isinstance(v, str) and v.strip():
+            out[str(k).strip()] = v.strip()
+    return out
+
+
 def load_students_json(path: Path) -> dict[str, str]:
     """
     Load optional hand mapping: folder name / key -> submission URL.
