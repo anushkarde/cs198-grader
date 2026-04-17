@@ -13,6 +13,17 @@ paperless:
   # https://cs198.stanford.edu/paperless/CS/106A/sections/8004/assignments/1451
   section_assignment_url: ""
 
+# run_autograder.py: per-folder KarelAutograder.py --all
+autograder:
+  # Root folder containing one directory per student submission (required to run)
+  submissions_root: ""
+  # Per-student full logs and machine-readable summaries (relative to repo unless absolute)
+  logs_dir: .grader_cache/autograder_logs
+  python: python3
+  script_name: KarelAutograder.py
+  # 0 or negative = no limit
+  timeout_sec: 600
+
 # discover_submissions.py: map folder names to submission grading URLs
 discover:
   # Match folder names against SUNet (from row text) or numeric submission id from the URL

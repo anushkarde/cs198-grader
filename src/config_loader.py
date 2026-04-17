@@ -70,3 +70,52 @@ def discover_students_json_path(cfg: dict[str, Any]) -> Path | None:
 def playwright_browser(cfg: dict[str, Any]) -> str:
     name = (cfg.get("playwright") or {}).get("browser") or "chromium"
     return str(name).lower()
+
+
+def autograder_submissions_root(cfg: dict[str, Any]) -> Path | None:
+    env = os.environ.get("CS198_SUBMISSIONS_ROOT", "").strip()
+    if env:
+        return Path(env).expanduser()
+    raw = (cfg.get("autograder") or {}).get("submissions_root")
+    if raw is None or str(raw).strip() == "":
+        return None
+    p = Path(str(raw).strip())
+    return p if p.is_absolute() else repo_root() / p
+
+
+def autograder_logs_dir(cfg: dict[str, Any]) -> Path:
+    env = os.environ.get("CS198_AUTOGRADER_LOGS_DIR", "").strip()
+    if env:
+        return Path(env).expanduser()
+    rel = (cfg.get("autograder") or {}).get("logs_dir") or ".grader_cache/autograder_logs"
+    p = Path(str(rel).strip())
+    return p if p.is_absolute() else repo_root() / p
+
+
+def autograder_python(cfg: dict[str, Any]) -> str:
+    env = os.environ.get("CS198_PYTHON", "").strip()
+    if env:
+        return env
+    return str((cfg.get("autograder") or {}).get("python") or "python3")
+
+
+def autograder_script_name(cfg: dict[str, Any]) -> str:
+    return str((cfg.get("autograder") or {}).get("script_name") or "KarelAutograder.py")
+
+
+def autograder_timeout_sec(cfg: dict[str, Any]) -> float | None:
+    env = os.environ.get("CS198_AUTOGRADER_TIMEOUT_SEC", "").strip()
+    if env:
+        try:
+            v = float(env)
+            return None if v <= 0 else v
+        except ValueError:
+            return None
+    raw = (cfg.get("autograder") or {}).get("timeout_sec")
+    if raw is None:
+        return 600.0
+    try:
+        v = float(raw)
+        return None if v <= 0 else v
+    except (TypeError, ValueError):
+        return 600.0

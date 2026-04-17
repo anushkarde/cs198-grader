@@ -8,6 +8,9 @@ storage_state.json
 # Playwright browser downloads (optional local cache)
 .playwright-browsers/
 
+# Autograder run logs / summaries (run_autograder.py)
+.grader_cache/
+
 # Python
 .venv/
 venv/
